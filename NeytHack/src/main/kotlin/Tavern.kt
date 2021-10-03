@@ -40,6 +40,14 @@ fun main() {
     }
 
     displayPatronBalances()
+
+    patronGold.forEach { patron, balance ->
+        if (balance <= 0) {
+            patronGold.remove(patron)
+            uniquePatrons.remove(patron)
+        }
+
+    }
 }
 
 private fun placeOrder(patronName: String, menuData: String) {
