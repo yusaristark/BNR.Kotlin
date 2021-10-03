@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 const val TAVERN_NAME = "Taernyl's Folly"
@@ -37,6 +38,8 @@ fun main() {
         placeOrder(uniquePatrons.shuffled().first(), menuList.shuffled().first())
         orderCount++
     }
+
+    showMenu()
 }
 
 private fun placeOrder(patronName: String, menuData: String) {
@@ -88,4 +91,20 @@ fun performPurchase(price: Double) {
 
 private fun displayBalance() {
     println("Player's purse balance: Gold: $playerGold , Silver: $playerSilver")
+}
+
+private fun showMenu() {
+    val welcomeString = "*** Welcome to Taernyl's Folly ***"
+    val welcomeStringLength = welcomeString.length
+
+        println(welcomeString)
+        println()
+        menuList.forEach {
+            val (type, name, price) = it.split(',')
+            print(name)
+            repeat(welcomeStringLength - name.length - price.replace("\r", "").length) {
+                print(".")
+            }
+            println(price.replace("\r", ""))
+        }
 }
