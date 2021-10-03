@@ -4,9 +4,13 @@ const val TAVERN_NAME = "Taernyl's Folly"
 
 var playerGold = 10
 var playerSilver = 10
+var volume : Double = 5.0
 
 fun main() {
-    placeOrder("shandy,Dragon's Breath,5.91")
+    repeat(12) {
+        placeOrder("shandy,Dragon's Breath,5.91")
+        println()
+    }
 //    placeOrder("elixir,Shirley's Temple,4.12")
 }
 
@@ -16,17 +20,21 @@ private fun placeOrder(menuData: String) {
     println("Madrigal speaks with $tavernMaster about their order.")
 
     val (type, name, price) = menuData.split(',')
-    val message = "Madrigal buys a $name ($type) for $price."
-    println(message)
+    if (performPurchase(price.toDouble())) {
+        val message = "Madrigal buys a $name ($type) for $price."
+        println(message)
 
-    performPurchase(price.toDouble())
 
-    val phrase = if (name == "Dragon's Breath") {
-        "Madrigal exclaims ${toDragonSpeak("Ah, delicious $name!")}"
+
+        val phrase = if (name == "Dragon's Breath") {
+            "Madrigal exclaims ${toDragonSpeak("Ah, delicious $name!")}"
+        } else {
+            "Madrigal says: Thanks for the $name."
+        }
+        println(phrase)
     } else {
-        "Madrigal says: Thanks for the $name."
+        println("You don\'t have enough money")
     }
-    println(phrase)
 }
 
 private fun toDragonSpeak(phrase: String) =
@@ -41,20 +49,27 @@ private fun toDragonSpeak(phrase: String) =
         }
     }
 
-fun performPurchase(price: Double) {
+fun performPurchase(price: Double): Boolean {
     displayBalance()
     val totalPurse = playerGold + (playerSilver / 100.0)
     println("Total purse: $totalPurse")
     println("Purchasing item for $price")
+    if (totalPurse >= price) {
+        val remainingBalance = totalPurse - price
+        println("Remaining balance: ${"%.2f".format(remainingBalance)}")
 
-    val remainingBalance = totalPurse - price
-    println("Remaining balance: ${"%.2f".format(remainingBalance)}")
+        val remainingGold = remainingBalance.toInt();
+        val remainingSilver = (remainingBalance % 1 * 100).roundToInt()
+        playerGold = remainingGold
+        playerSilver = remainingSilver
 
-    val remainingGold = remainingBalance.toInt();
-    val remainingSilver = (remainingBalance % 1 * 100).roundToInt()
-    playerGold = remainingGold
-    playerSilver = remainingSilver
-    displayBalance()
+        volume -= 0.125
+        println("Volume remaining: $volume")
+        displayBalance()
+        return true
+    } else {
+        return false
+    }
 }
 
 private fun displayBalance() {
