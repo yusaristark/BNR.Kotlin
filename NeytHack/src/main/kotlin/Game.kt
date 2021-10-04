@@ -1,3 +1,5 @@
+import kotlin.system.exitProcess
+
 fun main(args: Array<String>) {
     Game.play()
 }
@@ -23,7 +25,7 @@ object Game {
 
             printPlayerStatus(player)
 
-            print("> Enter your command:")
+            print("> Enter your command: ")
             println(GameInput(readLine()).processCommand())
         }
     }
@@ -59,8 +61,32 @@ object Game {
 
         fun processCommand() = when (command.lowercase()) {
             "move" -> move(argument)
+            "quit" -> {
+                println("Farewell, adventurer!")
+                exitProcess(0)
+            }
+            "map" -> {
+                worldMap.forEach {
+                    it.forEach { room ->
+                        if (room == currentRoom) {
+                            print("X ")
+                        } else {
+                            print("O ")
+                        }
+                    }
+                    println()
+                }
+            }
+            "ring" -> ringBell(argument.toInt())
             else -> commandNotFound()
         }
+        fun ringBell(times: Int = 2) {
+            println("${player.name} bells $times time!")
+            repeat(times) {
+                println("BOOM!")
+            }
+        }
+
     }
 }
 
