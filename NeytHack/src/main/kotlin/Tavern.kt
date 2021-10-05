@@ -1,15 +1,19 @@
 import java.io.File
-import kotlin.math.roundToInt
 
 const val TAVERN_NAME = "Taernyl's Folly"
 
 val lastName = listOf("Ironfoot", "Fernsworth", "Baggins")
 val patronList: MutableList<String> = mutableListOf("Eli", "Mordoc", "Sophie")
-val uniquePatrons = mutableSetOf<String>()
+val uniquePatrons: Set<String> = generateSequence {
+    val first = patronList.random()
+    val last = lastName.random()
+    "$first $last"
+}.distinct().take(9).toSet()
+
 val menuList = File("data\\tavern-menu-items.txt")
     .readText()
     .split("\n")
-val patronGold = mutableMapOf<String, Double>()
+val patronGold: MutableMap<String, Double> = uniquePatrons.associateWith { 6.0 }.toMutableMap()
 
 fun main() {
     if (patronList.contains("Eli")) {
@@ -23,15 +27,8 @@ fun main() {
         println("The tavern master says: Nay, they departed hours ago.")
     }
 
-    (0..9).forEach {
-        val first = patronList.random()
-        val last = lastName.random()
-        val name = "$first $last"
-        uniquePatrons += name
-    }
-    uniquePatrons.forEach {
-        patronGold[it] = 6.0
-    }
+    println(uniquePatrons)
+    println(patronGold)
 
     var orderCount = 0
     while (orderCount <= 9) {
@@ -40,6 +37,9 @@ fun main() {
     }
 
     displayPatronBalances()
+
+    val valuesToAdd = listOf(1, 18, 73, 3, 44, 6, 1, 33, 2, 22, 5, 7)
+    println(valuesToAdd.filter { it > 4 }.chunked(2).map { it[0] * it[1] }.fold(0) {acc, i -> acc + i })
 }
 
 private fun placeOrder(patronName: String, menuData: String) {
