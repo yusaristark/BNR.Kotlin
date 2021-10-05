@@ -1,11 +1,12 @@
 import java.io.File
+import java.util.*
 
 class Player(_name: String,
-             var healthPoints: Int = 100,
+             override var healthPoints: Int = 100,
              val isBlessed: Boolean,
-             private val isImmortal: Boolean) {
+             private var isImmortal: Boolean) : Fightable {
     var name = _name
-    get() = "${field.capitalize()} of $hometown"
+    get() = "${field.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }} of $hometown"
     set(value) {
         field = value.trim()
     }
@@ -51,4 +52,19 @@ class Player(_name: String,
         .shuffled()
         .first()
         .replace("\r", "")
+
+    override val diceCount: Int
+        get() = 3
+    override val diceSides: Int
+        get() = 6
+
+    override fun attack(opponent: Fightable): Int {
+        val damageDealt = if (isBlessed) {
+            damageRoll * 2
+        } else {
+            damageRoll
+        }
+        opponent.healthPoints -= damageDealt
+        return damageDealt
+    }
 }
