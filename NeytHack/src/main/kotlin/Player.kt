@@ -1,3 +1,4 @@
+import extensions.random as randomizer
 import java.io.File
 import java.util.*
 
@@ -49,8 +50,7 @@ class Player(_name: String,
     private fun selectHometown() = File("data\\towns.txt")
         .readText()
         .split("\n")
-        .shuffled()
-        .first()
+        .randomizer()
         .replace("\r", "")
 
     override val diceCount: Int
